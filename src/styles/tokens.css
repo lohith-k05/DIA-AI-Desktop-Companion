@@ -1,0 +1,62 @@
+:root {
+  /* ===================================================
+   * Dia Visual Design Tokens (Cyber-Elegance Dark)
+   * =================================================== */
+
+  /* Canvas & Layered Surfaces */
+  --bg-abyss: #070a14;
+  --bg-surface-subtle: #0d1122;
+  --bg-surface-card: #11172d;
+  --bg-surface-elevated: #171e3a;
+  --bg-surface-input: #0b0f20;
+  --bg-surface-glass: rgba(17, 23, 45, 0.75);
+
+  /* Primary Spectral Accents */
+  --accent-primary: #8b5cf6;
+  --accent-primary-hover: #7c3aed;
+  --accent-highlight: #a78bfa;
+  --accent-glow: rgba(139, 92, 246, 0.22);
+  --accent-glow-intense: rgba(167, 139, 250, 0.45);
+  --accent-soft: rgba(139, 92, 246, 0.12);
+
+  /* Status Indicators */
+  --status-online: #10b981;
+  --status-listening: #ec4899;
+  --status-thinking: #f59e0b;
+  --status-speaking: #8b5cf6;
+  --status-error: #ef4444;
+  --status-cyan: #06b6d4;
+
+  /* Typography Colors */
+  --text-primary: #f5f5ff;
+  --text-secondary: #9ca3c7;
+  --text-tertiary: #5e6589;
+  --text-accent: #c4b5fd;
+
+  /* Borders & Dividers */
+  --border-subtle: rgba(139, 92, 246, 0.18);
+  --border-focused: rgba(167, 139, 250, 0.45);
+  --border-divider: rgba(255, 255, 255, 0.06);
+
+  /* Elevation Shadows */
+  --shadow-card: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+  --shadow-glow: 0 0 35px rgba(139, 92, 246, 0.25);
+  --shadow-character-glow: 0 0 80px 20px rgba(139, 92, 246, 0.18);
+
+  /* Geometry & Radii */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  --sidebar-width: 250px;
+  --right-panel-width: 320px;
+  --titlebar-height: 40px;
+
+  /* Acceleration Curves */
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 160ms var(--ease-smooth);
+  --transition-normal: 280ms var(--ease-smooth);
+  --transition-hero: 650ms var(--ease-spring);
+}
