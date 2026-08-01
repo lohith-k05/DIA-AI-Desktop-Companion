@@ -1,0 +1,783 @@
+/* ==========================================================================
+   DIA REALISTIC 2D INTERACTIVE CHARACTER ANIMATIONS
+   Option 1 Specification: Subtle, Living AI Companion Kinetics
+   ========================================================================== */
+
+.dia-char-renderer-root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: visible;
+}
+
+/* Sizing variations */
+.dia-char-renderer-root.size-hero {
+  width: 100%;
+  max-width: 330px;
+  height: clamp(280px, 38vh, 375px);
+}
+
+.dia-char-renderer-root.size-lg {
+  width: 280px;
+  height: 340px;
+}
+
+.dia-char-renderer-root.size-md {
+  width: 180px;
+  height: 220px;
+}
+
+.dia-char-renderer-root.size-sm {
+  width: 64px;
+  height: 76px;
+}
+
+/* ---------------------------------------------------- */
+/* CHARACTER STAGE & SPRITE WRAPPER                     */
+/* ---------------------------------------------------- */
+.dia-char-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dia-char-sprite-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.dia-char-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  display: block;
+  pointer-events: none;
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: center bottom;
+}
+
+/* ---------------------------------------------------- */
+/* LAYERED FACIAL ANIMATION SYSTEM CANVAS & LAYERS      */
+/* ---------------------------------------------------- */
+.dia-facial-canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.dia-facial-base {
+  position: relative;
+  z-index: 2;
+}
+
+.dia-facial-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  display: block;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 140ms ease-in-out;
+  transform-origin: center bottom;
+}
+
+.dia-facial-layer-eyes {
+  z-index: 4;
+}
+
+.dia-facial-layer-mouth {
+  z-index: 5;
+}
+
+.dia-facial-layer-overlay {
+  z-index: 6;
+}
+
+/* ---------------------------------------------------- */
+/* MULTI-LAYER SOFT AMBIENT GLOW AURAS                  */
+/* ---------------------------------------------------- */
+.dia-char-ambient-aura {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 82%;
+  height: 82%;
+  border-radius: 50%;
+  filter: blur(52px);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.42;
+  transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.6s ease,
+              transform 0.8s ease;
+}
+
+.dia-char-ambient-aura.aura-idle {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.42) 0%, rgba(99, 102, 241, 0.12) 60%, transparent 75%);
+  animation: auraBreatheSlow 5.2s ease-in-out infinite;
+}
+
+.dia-char-ambient-aura.aura-greeting {
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.55) 0%, rgba(236, 72, 153, 0.2) 60%, transparent 80%);
+  opacity: 0.55;
+}
+
+.dia-char-ambient-aura.aura-listening {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.6) 0%, rgba(16, 185, 129, 0.22) 60%, transparent 80%);
+  opacity: 0.58;
+  animation: auraPulseListening 2.4s ease-in-out infinite;
+}
+
+.dia-char-ambient-aura.aura-thinking {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.65) 0%, rgba(139, 92, 246, 0.28) 60%, transparent 80%);
+  opacity: 0.6;
+  animation: auraPulseThinking 2.8s ease-in-out infinite;
+}
+
+.dia-char-ambient-aura.aura-speaking {
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.65) 0%, rgba(139, 92, 246, 0.35) 60%, transparent 80%);
+  opacity: 0.65;
+  animation: auraPulseSpeaking 2.0s ease-in-out infinite;
+}
+
+.dia-char-ambient-aura.aura-happy {
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.55) 0%, rgba(245, 158, 11, 0.25) 60%, transparent 80%);
+  opacity: 0.58;
+}
+
+.dia-char-ambient-aura.aura-confused {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.5) 0%, rgba(99, 102, 241, 0.2) 60%, transparent 80%);
+  opacity: 0.48;
+}
+
+.dia-char-ambient-aura.aura-error {
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.55) 0%, rgba(249, 115, 22, 0.2) 60%, transparent 80%);
+  opacity: 0.52;
+}
+
+/* ---------------------------------------------------- */
+/* EXPRESSION-SPECIFIC SOFT AMBIENT AURA GRADIENTS      */
+/* ---------------------------------------------------- */
+.dia-char-ambient-aura.expr-aura-neutral {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.42) 0%, rgba(99, 102, 241, 0.12) 60%, transparent 75%);
+}
+
+.dia-char-ambient-aura.expr-aura-happy {
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.58) 0%, rgba(245, 158, 11, 0.25) 60%, transparent 80%);
+  opacity: 0.62;
+}
+
+.dia-char-ambient-aura.expr-aura-friendly {
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.52) 0%, rgba(236, 72, 153, 0.22) 60%, transparent 80%);
+  opacity: 0.56;
+}
+
+.dia-char-ambient-aura.expr-aura-curious {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.58) 0%, rgba(139, 92, 246, 0.22) 60%, transparent 80%);
+  opacity: 0.58;
+}
+
+.dia-char-ambient-aura.expr-aura-thoughtful {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.62) 0%, rgba(139, 92, 246, 0.25) 60%, transparent 80%);
+  opacity: 0.6;
+}
+
+.dia-char-ambient-aura.expr-aura-surprised {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.6) 0%, rgba(236, 72, 153, 0.3) 60%, transparent 80%);
+  opacity: 0.65;
+}
+
+.dia-char-ambient-aura.expr-aura-confused {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.48) 0%, rgba(148, 163, 184, 0.2) 60%, transparent 80%);
+  opacity: 0.48;
+}
+
+.dia-char-ambient-aura.expr-aura-concerned {
+  background: radial-gradient(circle, rgba(251, 146, 60, 0.52) 0%, rgba(236, 72, 153, 0.2) 60%, transparent 80%);
+  opacity: 0.54;
+}
+
+.dia-char-ambient-aura.expr-aura-sad {
+  background: radial-gradient(circle, rgba(148, 163, 184, 0.4) 0%, rgba(99, 102, 241, 0.15) 60%, transparent 80%);
+  opacity: 0.42;
+}
+
+.dia-char-ambient-aura.expr-aura-excited {
+  background: radial-gradient(circle, rgba(225, 29, 72, 0.65) 0%, rgba(245, 158, 11, 0.32) 60%, transparent 80%);
+  opacity: 0.68;
+}
+
+.dia-char-ambient-aura.expr-aura-calm {
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.48) 0%, rgba(99, 102, 241, 0.18) 60%, transparent 80%);
+  opacity: 0.46;
+}
+
+/* ---------------------------------------------------- */
+/* SUBTLE LIVING CHARACTER KINETICS (Strictly Natural)   */
+/* ---------------------------------------------------- */
+
+/* IDLE: Slow natural breathing + gentle float */
+.dia-char-renderer-root.state-idle .dia-char-image {
+  animation: diaBreathingNatural 5.0s ease-in-out infinite;
+}
+
+/* GREETING: Smooth entrance + slight scale-up */
+.dia-char-renderer-root.state-greeting .dia-char-image {
+  animation: diaGreetingFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* LISTENING: Attentive forward presence + soft cyan rim */
+.dia-char-renderer-root.state-listening .dia-char-image {
+  transform: scale(1.02) translateY(-2px);
+  filter: drop-shadow(0 0 24px rgba(6, 182, 212, 0.45)) drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
+  animation: diaAttentiveBreathing 3.6s ease-in-out infinite;
+}
+
+/* THINKING: Thoughtful floating movement */
+.dia-char-renderer-root.state-thinking .dia-char-image {
+  animation: diaThinkingDrift 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 0 26px rgba(99, 102, 241, 0.48)) drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
+}
+
+/* SPEAKING: Subtle rhythmic vocal expansion */
+.dia-char-renderer-root.state-speaking .dia-char-image {
+  animation: diaSpeakingVocal 2.2s ease-in-out infinite;
+  filter: drop-shadow(0 0 28px rgba(236, 72, 153, 0.52)) drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
+}
+
+/* HAPPY: Warm glow + gentle positive lift */
+.dia-char-renderer-root.state-happy .dia-char-image {
+  transform: scale(1.015) translateY(-3px);
+  filter: drop-shadow(0 0 26px rgba(236, 72, 153, 0.45)) drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
+  animation: diaHappyFloat 4.0s ease-in-out infinite;
+}
+
+/* CONFUSED: Subtle 1.2-degree head tilt (zero face distortion) */
+.dia-char-renderer-root.state-confused .dia-char-image {
+  transform: rotate(1.2deg) translateY(-1px);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ERROR: Calm alert state without looking broken */
+.dia-char-renderer-root.state-error .dia-char-image {
+  filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.4)) drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
+  animation: diaErrorCalm 4.5s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------- */
+/* EXPRESSION-SPECIFIC KINETICS (Subtle 2D Realism)     */
+/* ---------------------------------------------------- */
+
+/* NEUTRAL: Gentle baseline presence */
+.dia-char-renderer-root.expr-neutral:not(.state-listening):not(.state-thinking):not(.state-speaking) .dia-char-image {
+  animation: diaBreathingNatural 5.0s ease-in-out infinite;
+}
+
+/* HAPPY: Warm lift + positive float */
+.dia-char-renderer-root.expr-happy:not(.state-listening):not(.state-thinking) .dia-char-image {
+  transform: scale(1.015) translateY(-3px);
+  filter: drop-shadow(0 0 24px rgba(236, 72, 153, 0.42)) drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
+  animation: diaHappyFloat 4.0s ease-in-out infinite;
+}
+
+/* FRIENDLY: Soft warm presence */
+.dia-char-renderer-root.expr-friendly:not(.state-listening):not(.state-thinking) .dia-char-image {
+  transform: scale(1.008) translateY(-1px);
+  filter: drop-shadow(0 0 22px rgba(167, 139, 250, 0.4)) drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
+  animation: diaBreathingNatural 4.6s ease-in-out infinite;
+}
+
+/* CURIOUS: Inquisitive 1.1° head tilt and slight forward shift */
+.dia-char-renderer-root.expr-curious:not(.state-thinking) .dia-char-image {
+  transform: rotate(1.1deg) scale(1.012) translateY(-2px);
+  filter: drop-shadow(0 0 24px rgba(6, 182, 212, 0.42)) drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* THOUGHTFUL: Contemplative vertical drift */
+.dia-char-renderer-root.expr-thoughtful .dia-char-image {
+  animation: diaThinkingDrift 3.4s ease-in-out infinite;
+  filter: drop-shadow(0 0 26px rgba(99, 102, 241, 0.45)) drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
+}
+
+/* SURPRISED: Subtle quick scale-up without facial distortion */
+.dia-char-renderer-root.expr-surprised .dia-char-image {
+  animation: diaSurprisedPulse 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  filter: drop-shadow(0 0 26px rgba(245, 158, 11, 0.45)) drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
+}
+
+/* CONFUSED: Inquiring -1.2° reverse side tilt */
+.dia-char-renderer-root.expr-confused .dia-char-image {
+  transform: rotate(-1.2deg) translateY(-1px);
+  filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.38)) drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* CONCERNED: Attentive supportive presence */
+.dia-char-renderer-root.expr-concerned .dia-char-image {
+  transform: translateY(1px) scale(1.005);
+  filter: drop-shadow(0 0 22px rgba(251, 146, 60, 0.4)) drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
+  animation: diaBreathingNatural 5.2s ease-in-out infinite;
+}
+
+/* SAD: Subtle softening and respectful composure */
+.dia-char-renderer-root.expr-sad .dia-char-image {
+  transform: translateY(2px) scale(0.995);
+  filter: drop-shadow(0 0 16px rgba(148, 163, 184, 0.3)) drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
+  transition: transform 0.6s ease;
+}
+
+/* EXCITED: Energetic gentle lift */
+.dia-char-renderer-root.expr-excited .dia-char-image {
+  transform: scale(1.018) translateY(-4px);
+  filter: drop-shadow(0 0 28px rgba(225, 29, 72, 0.48)) drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
+  animation: diaExcitedLift 2.6s ease-in-out infinite;
+}
+
+/* CALM: Grounded, serene slow breathing */
+.dia-char-renderer-root.expr-calm .dia-char-image {
+  animation: diaCalmBreathing 5.6s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.35)) drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
+}
+
+/* ---------------------------------------------------- */
+/* KEYFRAMES                                            */
+/* ---------------------------------------------------- */
+
+@keyframes diaBreathingNatural {
+  0%, 100% {
+    transform: translateY(0px) scale(1.0);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.008);
+  }
+}
+
+@keyframes diaGreetingFadeIn {
+  0% {
+    opacity: 0.3;
+    transform: translateY(12px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1.0);
+  }
+}
+
+@keyframes diaAttentiveBreathing {
+  0%, 100% {
+    transform: scale(1.02) translateY(-2px);
+  }
+  50% {
+    transform: scale(1.025) translateY(-5px);
+  }
+}
+
+@keyframes diaThinkingDrift {
+  0%, 100% {
+    transform: translateY(0) scale(1.0);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.01);
+  }
+}
+
+@keyframes diaSpeakingVocal {
+  0%, 100% {
+    transform: translateY(0) scale(1.0);
+  }
+  25% {
+    transform: translateY(-2px) scale(1.008);
+  }
+  75% {
+    transform: translateY(-4px) scale(1.012);
+  }
+}
+
+@keyframes diaHappyFloat {
+  0%, 100% {
+    transform: translateY(-3px) scale(1.015);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.02);
+  }
+}
+
+@keyframes diaErrorCalm {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes auraBreatheSlow {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.96);
+    opacity: 0.38;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.05);
+    opacity: 0.52;
+  }
+}
+
+@keyframes auraPulseListening {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.98);
+    opacity: 0.52;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.08);
+    opacity: 0.68;
+  }
+}
+
+@keyframes auraPulseThinking {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.96);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.06);
+    opacity: 0.7;
+  }
+}
+
+@keyframes auraPulseSpeaking {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.98);
+    opacity: 0.58;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.75;
+  }
+}
+
+/* ---------------------------------------------------- */
+/* STATE INDICATORS (Listening, Thinking, Speaking)     */
+/* ---------------------------------------------------- */
+
+/* Listening Pulse Ring */
+.dia-listening-ring {
+  position: absolute;
+  width: 92%;
+  height: 92%;
+  border-radius: 50%;
+  border: 1.5px solid rgba(6, 182, 212, 0.65);
+  pointer-events: none;
+  animation: diaListeningRingPulse 1.9s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
+  z-index: 1;
+}
+
+@keyframes diaListeningRingPulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+}
+
+/* Thinking Orbital Halo */
+.dia-thinking-halo {
+  position: absolute;
+  width: 96%;
+  height: 96%;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(99, 102, 241, 0.6);
+  pointer-events: none;
+  animation: diaThinkingHaloSpin 8s linear infinite;
+  z-index: 1;
+}
+
+@keyframes diaThinkingHaloSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Speaking Wave Emitter */
+.dia-speaking-wave {
+  position: absolute;
+  bottom: 8%;
+  width: 55%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, var(--color-accent-violet, #8b5cf6), transparent);
+  border-radius: var(--radius-full, 9999px);
+  filter: blur(1px);
+  animation: diaWaveEmit 1.2s ease-in-out infinite;
+  z-index: 3;
+  pointer-events: none;
+}
+
+@keyframes diaWaveEmit {
+  0%, 100% {
+    transform: scaleX(0.7);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scaleX(1.15);
+    opacity: 1;
+  }
+}
+
+/* ---------------------------------------------------- */
+/* STATUS INDICATOR PILL (Official Companion Tag)       */
+/* ---------------------------------------------------- */
+.dia-status-pill {
+  position: absolute;
+  top: -2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full, 9999px);
+  background: rgba(7, 10, 20, 0.84);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-secondary, #94a3b8);
+  letter-spacing: 0.02em;
+  transition: all 0.3s ease;
+}
+
+.dia-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dia-status-dot.dot-listening {
+  background: #06b6d4;
+  box-shadow: 0 0 10px #06b6d4;
+}
+
+.dia-status-dot.dot-thinking {
+  background: #6366f1;
+  box-shadow: 0 0 10px #6366f1;
+}
+
+.dia-status-dot.dot-speaking {
+  background: #ec4899;
+  box-shadow: 0 0 10px #ec4899;
+}
+
+.dia-status-dot.dot-error {
+  background: #ef4444;
+  box-shadow: 0 0 10px #ef4444;
+}
+
+/* Expression Specific Status Dots */
+.dia-status-dot.dot-neutral {
+  background: #a78bfa;
+  box-shadow: 0 0 8px #a78bfa;
+}
+
+.dia-status-dot.dot-happy {
+  background: #ec4899;
+  box-shadow: 0 0 10px #ec4899;
+}
+
+.dia-status-dot.dot-friendly {
+  background: #f472b6;
+  box-shadow: 0 0 9px #f472b6;
+}
+
+.dia-status-dot.dot-curious {
+  background: #06b6d4;
+  box-shadow: 0 0 10px #06b6d4;
+}
+
+.dia-status-dot.dot-thoughtful {
+  background: #818cf8;
+  box-shadow: 0 0 10px #818cf8;
+}
+
+.dia-status-dot.dot-surprised {
+  background: #f59e0b;
+  box-shadow: 0 0 10px #f59e0b;
+}
+
+.dia-status-dot.dot-confused {
+  background: #c084fc;
+  box-shadow: 0 0 9px #c084fc;
+}
+
+.dia-status-dot.dot-concerned {
+  background: #fb923c;
+  box-shadow: 0 0 9px #fb923c;
+}
+
+.dia-status-dot.dot-sad {
+  background: #94a3b8;
+  box-shadow: 0 0 8px #94a3b8;
+}
+
+.dia-status-dot.dot-excited {
+  background: #e11d48;
+  box-shadow: 0 0 11px #e11d48;
+}
+
+.dia-status-dot.dot-calm {
+  background: #38bdf8;
+  box-shadow: 0 0 9px #38bdf8;
+}
+
+/* ---------------------------------------------------- */
+/* FALLBACK CARD                                        */
+/* ---------------------------------------------------- */
+.dia-char-fallback-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+  border: 1px dashed rgba(139, 92, 246, 0.35);
+  border-radius: var(--radius-xl, 16px);
+  background: rgba(11, 15, 28, 0.85);
+  max-width: 320px;
+  z-index: 5;
+}
+
+.dia-char-fallback-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(139, 92, 246, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent-violet, #a78bfa);
+}
+
+.dia-char-fallback-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.dia-char-fallback-desc {
+  font-size: 12px;
+  color: var(--color-text-secondary, #94a3b8);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.dia-char-fallback-btn {
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: var(--radius-md, 8px);
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dia-char-fallback-btn:hover {
+  background: rgba(139, 92, 246, 0.35);
+}
+
+/* ---------------------------------------------------- */
+/* FUTURE FACIAL LAYER ARCHITECTURE SLOTS               */
+/* ---------------------------------------------------- */
+.dia-facial-layer-slot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ---------------------------------------------------- */
+/* ADDITIONAL EXPRESSION KEYFRAMES                      */
+/* ---------------------------------------------------- */
+
+@keyframes diaSurprisedPulse {
+  0% {
+    transform: scale(1.0);
+  }
+  35% {
+    transform: scale(1.025) translateY(-3px);
+  }
+  100% {
+    transform: scale(1.012) translateY(-1px);
+  }
+}
+
+@keyframes diaExcitedLift {
+  0%, 100% {
+    transform: scale(1.015) translateY(-3px);
+  }
+  50% {
+    transform: scale(1.022) translateY(-6px);
+  }
+}
+
+@keyframes diaCalmBreathing {
+  0%, 100% {
+    transform: translateY(0) scale(1.0);
+  }
+  50% {
+    transform: translateY(-3px) scale(1.006);
+  }
+}
+
+/* ---------------------------------------------------- */
+/* ACCESSIBILITY: PREFERS-REDUCED-MOTION                */
+/* ---------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .dia-char-image,
+  .dia-facial-layer,
+  .dia-char-ambient-aura,
+  .dia-status-pill,
+  .dia-listening-ring,
+  .dia-thinking-halo,
+  .dia-speaking-wave {
+    animation: none !important;
+    transition: opacity 0.3s ease, filter 0.3s ease !important;
+  }
+}

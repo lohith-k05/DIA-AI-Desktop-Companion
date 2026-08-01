@@ -1,0 +1,171 @@
+/* ==========================================================================
+   DIA 2D IMAGE CHARACTER RENDERER (CANONICAL SPRITE & ATMOSPHERIC AURAS)
+   Section 30.4 Specification
+   ========================================================================== */
+
+.image-character-root {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  transition: all var(--transition-normal);
+}
+
+/* Sizing variations */
+.image-character-root.size-hero {
+  width: 320px;
+  height: 380px;
+}
+
+.image-character-root.size-lg {
+  width: 240px;
+  height: 290px;
+}
+
+.image-character-root.size-md {
+  width: 140px;
+  height: 170px;
+}
+
+.image-character-root.size-sm {
+  width: 54px;
+  height: 64px;
+}
+
+/* Ambient reactive glow aura */
+.image-character-ambient-glow {
+  position: absolute;
+  width: 75%;
+  height: 75%;
+  border-radius: 50%;
+  filter: blur(48px);
+  pointer-events: none;
+  z-index: 0;
+  transition: background var(--transition-normal), opacity var(--transition-normal);
+  animation: diaAuraPulse 4.5s ease-in-out infinite;
+}
+
+.image-character-ambient-glow.aura-idle {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.45) 0%, rgba(139, 92, 246, 0) 70%);
+}
+
+.image-character-ambient-glow.aura-listening {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.6) 0%, rgba(16, 185, 129, 0) 70%);
+}
+
+.image-character-ambient-glow.aura-thinking,
+.image-character-ambient-glow.aura-processing {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.6) 0%, rgba(139, 92, 246, 0) 70%);
+}
+
+.image-character-ambient-glow.aura-speaking {
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.65) 0%, rgba(139, 92, 246, 0) 70%);
+}
+
+.image-character-ambient-glow.aura-error {
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.6) 0%, rgba(239, 68, 68, 0) 70%);
+}
+
+.image-character-ambient-glow.aura-greeting,
+.image-character-ambient-glow.aura-happy {
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.5) 0%, rgba(139, 92, 246, 0) 70%);
+}
+
+/* Sprite Container & Image */
+.image-character-sprite-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.image-character-sprite-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.55));
+  animation: diaFloatAndBreathe 5.5s ease-in-out infinite;
+  transition: transform 300ms var(--ease-spring), filter 300ms ease;
+}
+
+/* State-specific physics */
+.image-character-root.activity-listening .image-character-sprite-image {
+  animation: diaFloatAndBreathe 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px rgba(6, 182, 212, 0.5));
+}
+
+.image-character-root.activity-thinking .image-character-sprite-image,
+.image-character-root.activity-processing .image-character-sprite-image {
+  animation: diaFloatAndBreathe 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px rgba(99, 102, 241, 0.5));
+}
+
+.image-character-root.activity-speaking .image-character-sprite-image {
+  animation: diaFloatAndBreathe 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 35px rgba(236, 72, 153, 0.6));
+}
+
+/* State Visualizer Elements */
+.image-listening-pulse-ring {
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  border-radius: 50%;
+  border: 2px solid rgba(6, 182, 212, 0.6);
+  animation: diaListeningPulse 1.8s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
+  pointer-events: none;
+}
+
+.image-thinking-orbital-halo {
+  position: absolute;
+  width: 96%;
+  height: 96%;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(99, 102, 241, 0.6);
+  animation: diaThinkingHalo 6s linear infinite;
+  pointer-events: none;
+}
+
+.image-speaking-wave-emitter {
+  position: absolute;
+  bottom: 10%;
+  width: 60%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, var(--color-accent-violet, #8b5cf6), transparent);
+  border-radius: var(--radius-full, 9999px);
+  filter: blur(1px);
+  animation: diaWaveBar 1.2s ease-in-out infinite;
+}
+
+/* Quick Renderer Toggle Button */
+.image-renderer-toggle-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full, 9999px);
+  background: rgba(11, 15, 28, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-secondary, #94a3b8);
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s ease;
+}
+
+.image-renderer-toggle-btn:hover {
+  background: rgba(139, 92, 246, 0.25);
+  color: #fff;
+  border-color: rgba(139, 92, 246, 0.6);
+  transform: translateY(-1px);
+}
