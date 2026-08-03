@@ -1,0 +1,425 @@
+.dia-right-panel {
+  width: 280px;
+  height: 100%;
+  background: rgba(8, 12, 22, 0.95);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 14px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  user-select: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  gap: 14px;
+  z-index: 10;
+}
+
+.dia-right-panel::-webkit-scrollbar {
+  width: 3px;
+}
+
+.dia-right-panel::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.2);
+  border-radius: 9999px;
+}
+
+/* 1. Dia Status Card */
+.dia-status-card {
+  background: rgba(18, 24, 43, 0.7);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(12px);
+}
+
+.dia-status-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dia-avatar-box {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+}
+
+.dia-status-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1.5px solid rgba(139, 92, 246, 0.5);
+  background: #111827;
+}
+
+.dia-status-online-dot {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #10b981;
+  border: 2px solid #0b0f1a;
+  box-shadow: 0 0 6px #10b981;
+}
+
+.dia-status-meta {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.dia-status-name {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.dia-status-online-label {
+  font-size: 0.72rem;
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+}
+
+.status-indicator-circle {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 4px #10b981;
+}
+
+/* Audio Waveform Equalizer */
+.dia-audio-waveform {
+  display: flex;
+  align-items: center;
+  gap: 2.5px;
+  height: 20px;
+  padding: 0 4px;
+}
+
+.wave-bar {
+  width: 2.5px;
+  background: #8b5cf6;
+  border-radius: 2px;
+  transition: height 120ms ease;
+}
+
+.dia-audio-waveform.is-idle .wave-bar {
+  height: 4px;
+  opacity: 0.5;
+}
+
+.dia-audio-waveform.is-listening .wave-bar {
+  background: #ec4899;
+  animation: wavePulse 0.8s ease-in-out infinite alternate;
+}
+
+.dia-audio-waveform.is-speaking .wave-bar {
+  background: #a855f7;
+  animation: waveSpeak 0.6s ease-in-out infinite alternate;
+}
+
+.wave-bar.bar-1 { height: 6px; animation-delay: 0.1s; }
+.wave-bar.bar-2 { height: 14px; animation-delay: 0.3s; }
+.wave-bar.bar-3 { height: 18px; animation-delay: 0.15s; }
+.wave-bar.bar-4 { height: 10px; animation-delay: 0.4s; }
+.wave-bar.bar-5 { height: 16px; animation-delay: 0.25s; }
+.wave-bar.bar-6 { height: 8px; animation-delay: 0.35s; }
+.wave-bar.bar-7 { height: 12px; animation-delay: 0.2s; }
+
+@keyframes waveSpeak {
+  0% { height: 4px; }
+  50% { height: 18px; }
+  100% { height: 6px; }
+}
+
+@keyframes wavePulse {
+  0% { height: 6px; }
+  100% { height: 14px; }
+}
+
+/* Quote capsule inside status card */
+.dia-status-quote-box {
+  background: rgba(10, 14, 28, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.dia-status-quote-text {
+  margin: 0;
+  font-size: 0.74rem;
+  font-style: italic;
+  color: #94a3b8;
+  line-height: 1.35;
+}
+
+/* 2. Today's Focus Card */
+.dia-focus-card {
+  background: rgba(18, 24, 43, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  backdrop-filter: blur(12px);
+}
+
+.dia-focus-header,
+.dia-tools-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dia-card-title {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  letter-spacing: -0.01em;
+}
+
+.dia-card-action-btn {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  background: transparent;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: color 150ms ease;
+}
+
+.dia-card-action-btn:hover {
+  color: #ffffff;
+}
+
+.dia-card-action-btn.see-all {
+  color: #8b5cf6;
+}
+
+.dia-card-action-btn.see-all:hover {
+  color: #c4b5fd;
+}
+
+.dia-focus-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dia-focus-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.dia-focus-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.dia-focus-item.highlighted {
+  background: rgba(124, 58, 237, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.dia-focus-ring {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 180ms ease;
+}
+
+.dia-focus-item.highlighted .dia-focus-ring {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+}
+
+.dia-focus-item.completed .dia-focus-ring {
+  background: #10b981;
+  border-color: #10b981;
+  color: #ffffff;
+}
+
+.check-icon {
+  stroke-width: 3px;
+}
+
+.dia-focus-label {
+  font-size: 0.78rem;
+  color: #cbd5e1;
+  transition: color 150ms ease;
+  line-height: 1.3;
+}
+
+.dia-focus-item.completed .dia-focus-label {
+  color: #64748b;
+  text-decoration: line-through;
+}
+
+.dia-focus-add-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.dia-focus-input {
+  flex: 1;
+  background: rgba(10, 14, 28, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.74rem;
+  color: #f1f5f9;
+  outline: none;
+}
+
+.dia-focus-add-btn {
+  background: #7c3aed;
+  color: #ffffff;
+  border-radius: 6px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* 3. Small Steps, Big Progress Card */
+.dia-progress-card {
+  background: rgba(18, 24, 43, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  backdrop-filter: blur(12px);
+}
+
+.dia-sprout-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.dia-progress-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dia-progress-title {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.dia-progress-desc {
+  margin: 0;
+  font-size: 0.7rem;
+  color: #8892b0;
+  font-style: italic;
+  line-height: 1.3;
+}
+
+/* 4. Quick Tools Grid */
+.dia-quick-tools-section {
+  background: rgba(18, 24, 43, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  backdrop-filter: blur(12px);
+}
+
+.dia-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.dia-tool-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 4px;
+  border-radius: 10px;
+  background: rgba(10, 14, 28, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.dia-tool-cell:hover {
+  background: rgba(22, 29, 52, 0.9);
+  border-color: rgba(139, 92, 246, 0.4);
+  transform: translateY(-2px);
+}
+
+.dia-tool-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dia-tool-cell.tool-blue .dia-tool-icon-wrap { color: #60a5fa; }
+.dia-tool-cell.tool-pink .dia-tool-icon-wrap { color: #f472b6; }
+.dia-tool-cell.tool-purple .dia-tool-icon-wrap { color: #c084fc; }
+.dia-tool-cell.tool-cyan .dia-tool-icon-wrap { color: #22d3ee; }
+.dia-tool-cell.tool-magenta .dia-tool-icon-wrap { color: #e879f9; }
+.dia-tool-cell.tool-green .dia-tool-icon-wrap { color: #4ade80; }
+
+.dia-tool-cell-label {
+  font-size: 0.68rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* 5. Right Footer */
+.dia-right-footer {
+  text-align: center;
+  padding: 4px 0 2px;
+  font-size: 0.68rem;
+  color: #64748b;
+  margin-top: auto;
+}
+
