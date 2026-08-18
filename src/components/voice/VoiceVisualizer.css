@@ -1,0 +1,121 @@
+.dia-voice-visualizer {
+  position: absolute;
+  inset: -40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Atmospheric Pulse Rings */
+.vis-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  transition: all var(--transition-normal);
+}
+
+.vis-ring-1 {
+  width: 110%;
+  height: 110%;
+}
+
+.vis-ring-2 {
+  width: 130%;
+  height: 130%;
+}
+
+.vis-ring-3 {
+  width: 155%;
+  height: 155%;
+}
+
+/* Idle State */
+.activity-idle .vis-ring-1 {
+  border-color: rgba(139, 92, 246, 0.15);
+  animation: diaAuraPulse 6s ease-in-out infinite;
+}
+
+.activity-idle .vis-ring-2 {
+  border-color: rgba(139, 92, 246, 0.08);
+  animation: diaAuraPulse 8s ease-in-out infinite 1s;
+}
+
+/* Listening State (Rose) */
+.activity-listening .vis-ring-1 {
+  border-color: rgba(236, 72, 153, 0.45);
+  box-shadow: 0 0 30px rgba(236, 72, 153, 0.25);
+  animation: diaListeningPulse 1.8s infinite;
+}
+
+.activity-listening .vis-ring-2 {
+  border-color: rgba(236, 72, 153, 0.25);
+  animation: diaListeningPulse 2.4s infinite 0.4s;
+}
+
+.activity-listening .vis-ring-3 {
+  border-color: rgba(236, 72, 153, 0.12);
+  animation: diaListeningPulse 3s infinite 0.8s;
+}
+
+/* Thinking State (Amber) */
+.activity-thinking .vis-ring-1 {
+  border-color: rgba(245, 158, 11, 0.4);
+  border-style: dashed;
+  animation: diaThinkingHalo 8s linear infinite;
+}
+
+.activity-thinking .vis-ring-2 {
+  border-color: rgba(245, 158, 11, 0.2);
+  border-style: dotted;
+  animation: diaThinkingHalo 14s linear infinite reverse;
+}
+
+/* Speaking State (Violet / Lavender) */
+.activity-speaking .vis-ring-1 {
+  border-color: rgba(167, 139, 250, 0.5);
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.35);
+  animation: diaAuraPulse 2.5s ease-in-out infinite;
+}
+
+.activity-speaking .vis-ring-2 {
+  border-color: rgba(139, 92, 246, 0.3);
+  animation: diaAuraPulse 3.5s ease-in-out infinite 0.5s;
+}
+
+/* Frequency Bars */
+.speech-freq-bars {
+  position: absolute;
+  bottom: -20px;
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 32px;
+  z-index: 10;
+}
+
+.speech-freq-bars .bar {
+  width: 4px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(180deg, var(--accent-highlight), var(--accent-primary));
+  box-shadow: 0 0 8px var(--accent-glow);
+  animation: diaWaveBar 1.2s ease-in-out infinite;
+}
+
+.bar-1 { animation-delay: 0.1s; height: 10px; }
+.bar-2 { animation-delay: 0.3s; height: 22px; }
+.bar-3 { animation-delay: 0.15s; height: 16px; }
+.bar-4 { animation-delay: 0.45s; height: 28px; }
+.bar-5 { animation-delay: 0.25s; height: 18px; }
+.bar-6 { animation-delay: 0.35s; height: 24px; }
+.bar-7 { animation-delay: 0.05s; height: 12px; }
+
+.listening-sonar-ring {
+  position: absolute;
+  width: 140%;
+  height: 140%;
+  border-radius: 50%;
+  border: 2px solid rgba(236, 72, 153, 0.4);
+  animation: diaListeningPulse 2s cubic-bezier(0.1, 0.8, 0.2, 1) infinite;
+}
