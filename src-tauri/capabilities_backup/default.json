@@ -1,0 +1,8 @@
+﻿{
+  "identifier": "default",
+  "description": "Default capability for Dia",
+  "windows": ["*"],
+  "permissions": [
+    "core:default"
+  ]
+}
