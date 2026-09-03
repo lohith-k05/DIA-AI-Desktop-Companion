@@ -1,0 +1,287 @@
+/* ==========================================================================
+   THREE.JS 3D CHARACTER RENDERER
+   Section 30.4, 30.15, 30.16, 30.17, 30.18 Specification
+   ========================================================================== */
+
+.three-character-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Sizing matrix */
+.three-character-root.size-sm {
+  width: 120px;
+  height: 120px;
+}
+
+.three-character-root.size-md {
+  width: 220px;
+  height: 220px;
+}
+
+.three-character-root.size-lg {
+  width: 300px;
+  height: 320px;
+}
+
+.three-character-root.size-hero {
+  width: 100%;
+  max-width: 440px;
+  height: 390px;
+}
+
+/* 3D Canvas Viewport */
+.three-canvas-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+}
+
+.three-canvas-viewport:active {
+  cursor: grabbing;
+}
+
+.three-webgl-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  outline: none;
+}
+
+/* Soft Ambient Light Glow Behind Character (Section 30.16) */
+.three-character-backdrop-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 78%;
+  height: 78%;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(52px);
+  opacity: 0.38;
+  transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+  z-index: 0;
+}
+
+.three-character-backdrop-glow.glow-idle {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.45) 0%, rgba(99, 102, 241, 0.15) 60%, transparent 80%);
+}
+
+.three-character-backdrop-glow.glow-listening {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.55) 0%, rgba(16, 185, 129, 0.2) 60%, transparent 80%);
+  opacity: 0.52;
+}
+
+.three-character-backdrop-glow.glow-thinking,
+.three-character-backdrop-glow.glow-processing {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.6) 0%, rgba(139, 92, 246, 0.25) 60%, transparent 80%);
+  opacity: 0.55;
+  animation: threeGlowPulse 2.8s infinite ease-in-out;
+}
+
+.three-character-backdrop-glow.glow-speaking {
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.58) 0%, rgba(139, 92, 246, 0.3) 60%, transparent 80%);
+  opacity: 0.6;
+}
+
+.three-character-backdrop-glow.glow-error {
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.6) 0%, rgba(249, 115, 22, 0.2) 60%, transparent 80%);
+}
+
+.three-character-backdrop-glow.glow-greeting,
+.three-character-backdrop-glow.glow-happy {
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.45) 0%, rgba(139, 92, 246, 0.25) 60%, transparent 80%);
+}
+
+@keyframes threeGlowPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.95);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.08);
+    opacity: 0.65;
+  }
+}
+
+/* Floating Controls HUD */
+.three-character-hud {
+  position: absolute;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(11, 15, 28, 0.84);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(139, 92, 246, 0.28);
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+  z-index: 10;
+  opacity: 0.88;
+  transition: opacity 0.25s ease, border-color 0.25s ease;
+}
+
+.three-character-hud:hover {
+  opacity: 1;
+  border-color: rgba(139, 92, 246, 0.55);
+}
+
+.three-hud-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary, #94a3b8);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.three-hud-btn:hover {
+  background: rgba(139, 92, 246, 0.2);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.three-hud-btn.active {
+  background: rgba(139, 92, 246, 0.35);
+  color: var(--color-accent-violet, #a78bfa);
+}
+
+.three-hud-divider {
+  width: 1px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.three-hud-badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--color-accent-violet, #a78bfa);
+  border: 1px solid rgba(139, 92, 246, 0.22);
+  white-space: nowrap;
+}
+
+/* Status Indicator Header Badge */
+.three-status-indicator {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full, 9999px);
+  background: rgba(7, 10, 20, 0.78);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  font-size: 11px;
+  color: var(--color-text-secondary, #94a3b8);
+  z-index: 10;
+}
+
+.three-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+
+.three-status-dot.active-speaking {
+  background: #ec4899;
+  box-shadow: 0 0 8px #ec4899;
+}
+
+.three-status-dot.active-listening {
+  background: #06b6d4;
+  box-shadow: 0 0 8px #06b6d4;
+}
+
+/* 30.18 Loading Experience ("Preparing Dia...") */
+.three-loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(7, 10, 20, 0.88);
+  backdrop-filter: blur(8px);
+  z-index: 15;
+  animation: fadeIn 0.3s ease;
+}
+
+.three-loading-spinner {
+  width: 36px;
+  height: 36px;
+  border: 2.5px solid rgba(139, 92, 246, 0.2);
+  border-top-color: var(--color-accent-violet, #8b5cf6);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.three-loading-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+/* 30.17 WebGL Fallback Card */
+.three-fallback-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+  border: 1px dashed rgba(139, 92, 246, 0.3);
+  border-radius: var(--radius-xl, 16px);
+  background: rgba(11, 15, 28, 0.7);
+  max-width: 320px;
+}
+
+.three-fallback-btn {
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: var(--radius-md, 8px);
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.three-fallback-btn:hover {
+  background: rgba(139, 92, 246, 0.35);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,320 @@
+/* ==========================================================================
+   DIA 3D HOLOGRAPHIC STAGE (THREE.JS / WEBGL & VRM BRIDGE)
+   ========================================================================== */
+
+.dia-3d-stage-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Sizing variations */
+.dia-3d-stage-root.size-sm {
+  width: 120px;
+  height: 120px;
+}
+
+.dia-3d-stage-root.size-md {
+  width: 220px;
+  height: 220px;
+}
+
+.dia-3d-stage-root.size-lg {
+  width: 320px;
+  height: 320px;
+}
+
+.dia-3d-stage-root.size-hero {
+  width: 100%;
+  max-width: 440px;
+  height: 380px;
+}
+
+/* Canvas Viewport */
+.dia-3d-canvas-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+}
+
+.dia-3d-canvas-container:active {
+  cursor: grabbing;
+}
+
+.dia-3d-webgl-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  outline: none;
+}
+
+/* Atmospheric 3D Auras */
+.dia-3d-stage-aura {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 85%;
+  height: 85%;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(48px);
+  opacity: 0.35;
+  transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+  z-index: 0;
+}
+
+.dia-3d-stage-aura.aura-idle {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.45) 0%, rgba(99, 102, 241, 0.15) 60%, transparent 80%);
+}
+
+.dia-3d-stage-aura.aura-listening {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.55) 0%, rgba(16, 185, 129, 0.2) 60%, transparent 80%);
+  opacity: 0.5;
+}
+
+.dia-3d-stage-aura.aura-thinking {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.6) 0%, rgba(139, 92, 246, 0.25) 60%, transparent 80%);
+  opacity: 0.55;
+  animation: auraPulse 2.5s infinite ease-in-out;
+}
+
+.dia-3d-stage-aura.aura-speaking {
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.55) 0%, rgba(139, 92, 246, 0.3) 60%, transparent 80%);
+  opacity: 0.6;
+}
+
+.dia-3d-stage-aura.aura-error {
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.6) 0%, rgba(249, 115, 22, 0.2) 60%, transparent 80%);
+}
+
+@keyframes auraPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.95);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.08);
+    opacity: 0.65;
+  }
+}
+
+/* Floating Stage Controls HUD */
+.dia-3d-controls-hud {
+  position: absolute;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: rgba(11, 15, 28, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+  opacity: 0.85;
+  transition: opacity 0.25s ease, border-color 0.25s ease;
+}
+
+.dia-3d-controls-hud:hover {
+  opacity: 1;
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+.hud-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary, #94a3b8);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hud-btn:hover {
+  background: rgba(139, 92, 246, 0.2);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.hud-btn.active {
+  background: rgba(139, 92, 246, 0.35);
+  color: var(--color-accent-violet, #a78bfa);
+}
+
+.hud-divider {
+  width: 1px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.hud-badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--color-accent-violet, #a78bfa);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  white-space: nowrap;
+}
+
+/* VRM Status Badge */
+.vrm-status-indicator {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: var(--radius-full, 9999px);
+  background: rgba(7, 10, 20, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  font-size: 11px;
+  color: var(--color-text-secondary, #94a3b8);
+  z-index: 10;
+}
+
+.vrm-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+
+/* WebGL Fallback Card */
+.webgl-fallback-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+  border: 1px dashed rgba(139, 92, 246, 0.3);
+  border-radius: var(--radius-xl, 16px);
+  background: rgba(11, 15, 28, 0.7);
+  max-width: 320px;
+}
+
+.fallback-icon-ring {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(139, 92, 246, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent-violet, #a78bfa);
+}
+
+.fallback-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.fallback-desc {
+  font-size: 12px;
+  color: var(--color-text-secondary, #94a3b8);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.fallback-action-btn {
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: var(--radius-md, 8px);
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.fallback-action-btn:hover {
+  background: rgba(139, 92, 246, 0.35);
+}
+
+/* VRM Upload Modal / Overlay */
+.vrm-uploader-modal {
+  position: absolute;
+  inset: 12px;
+  background: rgba(11, 15, 28, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: var(--radius-xl, 16px);
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  z-index: 20;
+  animation: fadeIn 0.2s ease;
+}
+
+.vrm-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.vrm-modal-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.vrm-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary, #94a3b8);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vrm-drop-zone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 2px dashed rgba(139, 92, 246, 0.35);
+  border-radius: var(--radius-lg, 12px);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.vrm-drop-zone:hover {
+  border-color: rgba(139, 92, 246, 0.7);
+  background: rgba(139, 92, 246, 0.05);
+}
+
+.vrm-upload-input {
+  display: none;
+}
