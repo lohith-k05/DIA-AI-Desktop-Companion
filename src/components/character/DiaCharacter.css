@@ -1,0 +1,168 @@
+.dia-character-facade-root {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.dia-character-root {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  transition: all var(--transition-normal);
+}
+
+/* Sizing matrix */
+.dia-character-root.size-hero {
+  width: 320px;
+  height: 380px;
+}
+
+.dia-character-root.size-lg {
+  width: 240px;
+  height: 290px;
+}
+
+.dia-character-root.size-md {
+  width: 140px;
+  height: 170px;
+}
+
+.dia-character-root.size-sm {
+  width: 54px;
+  height: 64px;
+}
+
+/* Ambient glow orb behind sprite */
+.character-ambient-glow {
+  position: absolute;
+  width: 75%;
+  height: 75%;
+  border-radius: 50%;
+  filter: blur(48px);
+  pointer-events: none;
+  z-index: 0;
+  transition: background var(--transition-normal), opacity var(--transition-normal);
+  animation: diaAuraPulse 4.5s ease-in-out infinite;
+}
+
+.character-ambient-glow.aura-idle {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.45) 0%, rgba(139, 92, 246, 0) 70%);
+}
+
+.character-ambient-glow.aura-listening {
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.6) 0%, rgba(236, 72, 153, 0) 70%);
+}
+
+.character-ambient-glow.aura-thinking {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.55) 0%, rgba(245, 158, 11, 0) 70%);
+}
+
+.character-ambient-glow.aura-speaking {
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.7) 0%, rgba(139, 92, 246, 0) 70%);
+}
+
+.character-ambient-glow.aura-error {
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.55) 0%, rgba(239, 68, 68, 0) 70%);
+}
+
+/* Sprite Container & Image */
+.character-sprite-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.character-sprite-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.55));
+  animation: diaFloatAndBreathe 5.5s ease-in-out infinite;
+  transition: transform 300ms var(--ease-spring), filter 300ms ease;
+}
+
+/* Activity specific physics */
+.dia-character-root.activity-listening .character-sprite-image {
+  animation: diaFloatAndBreathe 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px rgba(236, 72, 153, 0.45));
+}
+
+.dia-character-root.activity-thinking .character-sprite-image {
+  animation: diaFloatAndBreathe 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px rgba(245, 158, 11, 0.45));
+}
+
+.dia-character-root.activity-speaking .character-sprite-image {
+  animation: diaFloatAndBreathe 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 35px rgba(139, 92, 246, 0.6));
+}
+
+/* State Visualizer Elements */
+.listening-pulse-ring {
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  border-radius: 50%;
+  border: 2px solid rgba(236, 72, 153, 0.6);
+  animation: diaListeningPulse 1.8s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
+  pointer-events: none;
+}
+
+.thinking-orbital-halo {
+  position: absolute;
+  width: 96%;
+  height: 96%;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(245, 158, 11, 0.6);
+  animation: diaThinkingHalo 6s linear infinite;
+  pointer-events: none;
+}
+
+.speaking-wave-emitter {
+  position: absolute;
+  bottom: 10%;
+  width: 60%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, var(--accent-highlight), transparent);
+  border-radius: var(--radius-full);
+  filter: blur(1px);
+  animation: diaWaveBar 1.2s ease-in-out infinite;
+}
+
+/* Quick Renderer Switcher Button */
+.character-renderer-quick-toggle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: var(--radius-full, 9999px);
+  background: rgba(11, 15, 28, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-secondary, #94a3b8);
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s ease;
+}
+
+.character-renderer-quick-toggle:hover {
+  background: rgba(139, 92, 246, 0.25);
+  color: #fff;
+  border-color: rgba(139, 92, 246, 0.6);
+  transform: translateY(-1px);
+}
