@@ -1,0 +1,69 @@
+.dia-browser-task-card {
+  background: var(--dia-surface-2);
+  border: 1px solid var(--dia-border);
+  border-radius: 8px;
+  padding: 12px;
+  margin: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.dia-browser-task-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--dia-accent-purple);
+}
+
+.dia-browser-task-body {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--dia-text-1);
+}
+
+.spin-icon {
+  animation: spin 1s linear infinite;
+  color: var(--dia-accent-purple);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.dia-browser-task-error {
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dia-browser-task-success {
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dia-browser-task-stop {
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+  align-self: flex-start;
+}
+
+.dia-browser-task-stop:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+}
