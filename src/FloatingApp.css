@@ -1,0 +1,101 @@
+﻿.floating-app-root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: transparent !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.floating-companion-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  background: rgba(20, 20, 30, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.floating-video-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none; /* Let clicks pass through for dragging */
+}
+
+/* Make sure DiaVideo scales inside */
+.floating-video-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.floating-overlay-ui {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto; /* Buttons must be clickable */
+}
+
+.floating-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.floating-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.dot-idle { background: #666; }
+.dot-listening { background: #ff4757; animation: pulse 1.5s infinite; }
+.dot-thinking { background: #ffa502; animation: pulse 1s infinite; }
+.dot-speaking { background: #2ed573; }
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.floating-controls {
+  display: flex;
+  gap: 12px;
+}
+
+.floating-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(5px);
+}
+.floating-btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.05); }
+.floating-btn.listening { background: rgba(255, 71, 87, 0.8); }
